@@ -82,6 +82,9 @@ def main( ):
         threads = 0
     
     platform = str(bpy.app.build_platform)
+    ## Get the Blender version ##
+    ver = (bpy.app.version_string.split("."))
+    version = "%s.%s" % (ver[0], ver[1])
     
     deadlineCommand = GetDeadlineCommand()
     
@@ -91,9 +94,10 @@ def main( ):
     args.append(script_file)
     args.append(scene_file)
     args.append(frame_range)
-    args.append(output_path)
+    args.append(output_path+","+version)
     args.append(str(threads))
     args.append(platform)
+    args.append(version)
     
     startupinfo = None
     #~ if os.name == 'nt':

@@ -52,8 +52,16 @@ class BlenderPlugin(DeadlinePlugin):
     def RenderExecutable(self):
         build = self.GetPluginInfoEntryWithDefault( "Build", "None" ).lower()
         
+        ### Get Version ##
+        blVersion = self.GetPluginInfoEntryWithDefault( "Version", "" ).lower()
+        
         executable = ""
-        executableList = self.GetConfigEntry( "Blender_RenderExecutable" )
+        try:
+            executableList = self.GetConfigEntry( "Blender_%s_RenderExecutable" % ( blVersion ) )
+        except:
+            executableList = self.GetConfigEntry( "Blender_RenderExecutable" )
+        
+        ###
         
         if(SystemUtils.IsRunningOnWindows()):
             if( build == "32bit" ):

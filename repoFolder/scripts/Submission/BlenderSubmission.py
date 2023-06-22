@@ -122,6 +122,10 @@ def __main__( *args ):
 
     scriptDialog.AddControlToGrid( "BuildLabel", "LabelControl", "Build To Force", 6, 0, "You can force 32 or 64 bit rendering with this option.", False )
     scriptDialog.AddComboControlToGrid( "BuildBox", "ComboControl", "None", ("None","32bit","64bit"), 6, 1, expand=False )
+    ##Version##
+    scriptDialog.AddControlToGrid( "BlenderVersionLabel", "LabelControl", "Blender Version: ", 7, 0, "This is the blender version from where the job is submitted", False )
+    scriptDialog.AddControlToGrid( "BlenderVersion", "LabelControl", "X.X", 7, 1, "", False )
+    #####
     scriptDialog.EndGrid()
     scriptDialog.EndTabPage()
     
@@ -156,12 +160,20 @@ def __main__( *args ):
             scriptDialog.ShowMessageBox( "The Blender scene must be saved before it can be submitted to Deadline.", "Error" )
             return
         
+        ## Get Blender Version from output file ##
+        outfl = args[2].split(',')[0]
+        blVersion = args[2].split(',')[1]
+        scriptDialog.SetValue( "BlenderVersion", blVersion )
+
         scriptDialog.SetValue( "SceneBox", args[0] )
-        scriptDialog.SetValue( "NameBox", Path.GetFileNameWithoutExtension( args[0] ) )
+        scriptDialog.SetValue( "NameBox", "%s_bl-%s" % ( Path.GetFileNameWithoutExtension( args[0] ), blVersion ) )
         
-        scriptDialog.SetValue( "FramesBox", args[1] )
+        scriptDialog.SetValue( "FramesBox", args[1] )        
         
-        outputFile = args[2]
+        
+        outputFile = outfl
+        ####
+
         paddingSize = FrameUtils.GetPaddingSizeFromFilename( outputFile )
         padding = ""
         while len(padding) < paddingSize:
@@ -297,6 +309,10 @@ def SubmitButtonPressed(*args):
     writer.WriteLine( "Threads=%s" % scriptDialog.GetValue( "ThreadsBox" ) )
     writer.WriteLine( "Build=%s" % scriptDialog.GetValue( "BuildBox" ) )
     
+    ## Write Version ##
+    writer.WriteLine( "Version=%s" % scriptDialog.GetValue( "BlenderVersion" ) )
+    #print("Blender version is this: %s" % (scriptDialog.GetValue( "BlenderVersion" )) )
+
     writer.Close()
     
     # Setup the command line arguments.

@@ -8,6 +8,8 @@ from System.IO import *
 from Deadline.Plugins import DeadlinePlugin, PluginType
 from Deadline.Scripting import RepositoryUtils, SystemUtils, FileUtils, StringUtils
 
+import sys
+
 def GetDeadlinePlugin():
     return BlenderPlugin()
     
@@ -19,6 +21,8 @@ class BlenderPlugin(DeadlinePlugin):
     finishedFrameCount = 0
     
     def __init__(self):
+        if sys.version_info.major == 3:
+            super().__init__()
         self.InitializeProcessCallback += self.InitializeProcess
         self.RenderExecutableCallback += self.RenderExecutable
         self.RenderArgumentCallback += self.RenderArgument
